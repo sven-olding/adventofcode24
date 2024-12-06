@@ -13,6 +13,9 @@ public class PrintQueue {
             new ArrayList<>(new ArrayList<>());
 
     public static int solve(String input) {
+        pageNumbersForUpdate.clear();
+        pageOrderingRules.clear();
+
         parseInput(input);
 
         int result = 0;
