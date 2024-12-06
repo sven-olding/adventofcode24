@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 class PrintQueueTest {
-
-    @Test
-    void solvesExampleInput() {
-        final String input =
-                """
+    private static final String EXAMPLE_INPUT =
+            """
 47|53
 97|13
 97|61
@@ -40,15 +37,8 @@ class PrintQueueTest {
 97,13,75,29,47
 """;
 
-        int result = PrintQueue.solve(input);
-
-        assertEquals(143, result);
-    }
-
-    @Test
-    void solvesPuzzleInput() {
-        final String input =
-                """
+    private static final String PUZZLE_INPUT =
+            """
 69|26
 93|46
 93|43
@@ -1421,8 +1411,31 @@ class PrintQueueTest {
 46,43,84,59,37,86,63,53,66,48,26
 """;
 
-        int result = PrintQueue.solve(input);
+    @Test
+    void solvesExampleInput() {
+        int result = PrintQueue.solve(EXAMPLE_INPUT);
+
+        assertEquals(143, result);
+    }
+
+    @Test
+    void solvesExampleInputSecondPart() {
+        int result = PrintQueue.solveSecondPart(EXAMPLE_INPUT);
+
+        assertEquals(123, result);
+    }
+
+    @Test
+    void solvesPuzzleInput() {
+        int result = PrintQueue.solve(PUZZLE_INPUT);
 
         assertEquals(4689, result);
+    }
+
+    @Test
+    void solvesPuzzleInputSecondPart() {
+        int result = PrintQueue.solveSecondPart(PUZZLE_INPUT);
+
+        assertEquals(6336, result);
     }
 }

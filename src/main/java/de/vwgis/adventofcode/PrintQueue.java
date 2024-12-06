@@ -1,6 +1,8 @@
 package de.vwgis.adventofcode;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -33,6 +35,84 @@ public class PrintQueue {
         }
 
         return result;
+    }
+
+    public static int solveSecondPart(String input) {
+        pageOrderingRules.clear();
+        pageNumbersForUpdate.clear();
+
+        parseInput(input);
+
+        var newlyOrderedCorrect = new ArrayList<ArrayList<Integer>>();
+
+        for (List<Integer> update : pageNumbersForUpdate) {
+            for (PageOrderingRule pageOrderingRule : pageOrderingRules) {
+                if (!isCorrectlyOrdered(update, pageOrderingRule)) {
+                    newlyOrderedCorrect.add(order(update, pageOrderingRules));
+                    break;
+                }
+            }
+        }
+
+        int result = 0;
+
+        for (ArrayList<Integer> integers : newlyOrderedCorrect) {
+            result += integers.get(integers.size() / 2);
+        }
+
+        return result;
+    }
+
+    private static ArrayList<Integer> order(
+            List<Integer> update, List<PageOrderingRule> pageOrderingRules) {
+        // Step 1: Build the graph and in-degree map for the update pages
+        var graph = new HashMap<Integer, List<Integer>>();
+        var inDegree = new HashMap<Integer, Integer>();
+
+        // Initialize the graph and in-degree map for the pages in the update
+        for (int page : update) {
+            graph.put(page, new ArrayList<>());
+            inDegree.put(page, 0);
+        }
+
+        // Add edges based on the rules that apply to this update
+        for (PageOrderingRule rule : pageOrderingRules) {
+            int x = rule.x();
+            int y = rule.y();
+
+            // Only consider rules where both x and y are in the current update
+            if (update.contains(x) && update.contains(y)) {
+                graph.get(x).add(y);
+                inDegree.put(y, inDegree.getOrDefault(y, 0) + 1);
+            }
+        }
+
+        // Step 2: Perform topological sorting using Kahn's algorithm
+        var sortedOrder = new ArrayList<Integer>();
+        var queue = new ArrayDeque<Integer>();
+
+        // Add all pages with in-degree 0 to the queue
+        for (int page : inDegree.keySet()) {
+            if (inDegree.get(page) == 0) {
+                queue.add(page);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            sortedOrder.add(current);
+
+            // Decrease in-degree for neighbors and add them to the queue if in-degree becomes 0
+            for (int neighbor : graph.get(current)) {
+                inDegree.put(neighbor, inDegree.get(neighbor) - 1);
+                if (inDegree.get(neighbor) == 0) {
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        // Step 3: Return the sorted order
+        return sortedOrder;
     }
 
     private static boolean isCorrectlyOrdered(
