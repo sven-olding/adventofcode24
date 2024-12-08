@@ -10,7 +10,7 @@ public class CeresSearch {
     private static final char[] XMAS = {'X', 'M', 'A', 'S'};
 
     public static int solve(String input) {
-        char[][] matrix = getCharMatrix(input);
+        char[][] matrix = Util.getCharMatrix(input);
 
         int result = 0;
         int rows = matrix.length;
@@ -50,13 +50,4 @@ public class CeresSearch {
         return true;
     }
 
-    private static char[][] getCharMatrix(String input) {
-        List<char[]> matrix = new ArrayList<>();
-        try (Scanner scanner = new Scanner(input)) {
-            while (scanner.hasNextLine()) {
-                matrix.add(scanner.nextLine().toCharArray());
-            }
-        }
-        return matrix.toArray(new char[0][]);
-    }
 }
