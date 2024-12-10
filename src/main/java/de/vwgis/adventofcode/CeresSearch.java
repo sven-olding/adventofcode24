@@ -1,9 +1,5 @@
 package de.vwgis.adventofcode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 public class CeresSearch {
     private CeresSearch() {}
 
@@ -49,5 +45,4 @@ public class CeresSearch {
 
         return true;
     }
-
 }
