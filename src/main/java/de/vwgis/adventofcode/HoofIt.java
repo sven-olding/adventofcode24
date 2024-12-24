@@ -16,7 +16,19 @@ public class HoofIt {
 
         int totalScore = 0;
         for (Point trailhead : trailheads) {
-            totalScore += calculateTrailheadScore(grid, trailhead);
+            totalScore += calculateTrailheadScore(grid, trailhead, false);
+        }
+
+        return totalScore;
+    }
+
+    public static int solve2(String input) {
+        char[][] grid = Util.getCharMatrix(input.replace(" ", ""));
+        List<Point> trailheads = findTrailheads(grid);
+
+        int totalScore = 0;
+        for (Point trailhead : trailheads) {
+            totalScore += calculateTrailheadScore(grid, trailhead, true);
         }
 
         return totalScore;
@@ -34,11 +46,18 @@ public class HoofIt {
         return trailheads;
     }
 
-    private static int calculateTrailheadScore(char[][] grid, Point start) {
-        Set<Point> reachableNines = new HashSet<>();
+    private static int calculateTrailheadScore(char[][] grid, Point start, boolean findDistinctPaths) {
         boolean[][] visited = new boolean[grid.length][grid[0].length];
-        dfs(grid, start, visited, reachableNines);
-        return reachableNines.size();
+
+        if (findDistinctPaths) {
+            Set<List<Point>> distinctPaths = new HashSet<>();
+            dfs(grid, start, visited, new ArrayList<>(), distinctPaths);
+            return distinctPaths.size();
+        } else {
+            Set<Point> reachableNines = new HashSet<>();
+            dfs(grid, start, visited, reachableNines);
+            return reachableNines.size();
+        }
     }
 
     private static void dfs(char[][] grid, Point current, boolean[][] visited, Set<Point> reachableNines) {
@@ -59,6 +78,31 @@ public class HoofIt {
                 dfs(grid, new Point(newX, newY), visited, reachableNines);
             }
         }
+    }
+
+    private static void dfs(char[][] grid, Point current, boolean[][] visited,
+            List<Point> currentPath, Set<List<Point>> distinctPaths) {
+        visited[current.x][current.y] = true;
+        currentPath.add(current);
+
+        int currentHeight = grid[current.x][current.y] - '0';
+
+        if (currentHeight == 9) {
+            distinctPaths.add(new ArrayList<>(currentPath));
+        } else {
+            for (int i = 0; i < 4; i++) {
+                int newX = current.x + DX[i];
+                int newY = current.y + DY[i];
+
+                if (isValidMove(grid, newX, newY, visited) &&
+                        grid[newX][newY] - '0' == currentHeight + 1) {
+                    dfs(grid, new Point(newX, newY), visited, currentPath, distinctPaths);
+                }
+            }
+        }
+
+        visited[current.x][current.y] = false;
+        currentPath.remove(currentPath.size() - 1);
     }
 
     private static boolean isValidMove(char[][] grid, int x, int y, boolean[][] visited) {

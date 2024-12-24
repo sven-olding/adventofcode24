@@ -89,4 +89,18 @@ public class HoofItTest {
 
         assertEquals(782, result);
     }
+
+    @Test
+    void solvesExampleInput2() {
+        int result = HoofIt.solve2(EXAMPLE_INPUT);
+
+        assertEquals(81, result);
+    }
+
+    @Test
+    void solvesPuzzleInput2() {
+        int result = HoofIt.solve2(PUZZLE_INPUT);
+
+        assertEquals(1694, result);
+    }
 }
